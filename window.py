@@ -40,6 +40,7 @@ def minimize_anki():
     lol_hwnd = _find_lol()
     if lol_hwnd:
         try:
+            win32gui.ShowWindow(lol_hwnd, win32con.SW_RESTORE)
             SWP_FLAGS = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
             win32gui.SetWindowPos(lol_hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, SWP_FLAGS)
             win32gui.SetWindowPos(lol_hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0, SWP_FLAGS)

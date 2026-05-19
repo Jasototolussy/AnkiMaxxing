@@ -31,15 +31,16 @@ def test_maximize_anki_skips_if_no_window():
 
 
 def test_minimize_anki_calls_show_window():
-    with patch("window.win32gui.EnumWindows", side_effect=lambda cb, lst: _enum_found(12345, lst)), \
-         patch("window.win32gui.GetWindowText", return_value="Benutzer 1 - Anki"), \
+    with patch("window._find_anki", return_value=12345), \
+         patch("window._find_lol", return_value=0), \
          patch("window.win32gui.ShowWindow") as mock_show:
         minimize_anki()
         mock_show.assert_called_once_with(12345, win32con.SW_MINIMIZE)
 
 
 def test_minimize_anki_skips_if_no_window():
-    with patch("window.win32gui.EnumWindows", side_effect=lambda cb, lst: None), \
+    with patch("window._find_anki", return_value=0), \
+         patch("window._find_lol", return_value=0), \
          patch("window.win32gui.ShowWindow") as mock_show:
         minimize_anki()
         mock_show.assert_not_called()
