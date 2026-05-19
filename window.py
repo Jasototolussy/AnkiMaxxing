@@ -1,7 +1,5 @@
 import win32gui
 import win32con
-import win32process
-import win32api
 
 
 def _find_anki():
@@ -18,18 +16,10 @@ def maximize_anki():
     if hwnd:
         win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
         try:
-            # Attach to the target window's thread to bypass foreground lock
-            fg_hwnd = win32gui.GetForegroundWindow()
-            fg_tid = win32process.GetWindowThreadProcessId(fg_hwnd)[0]
-            our_tid = win32api.GetCurrentThreadId()
-            target_tid = win32process.GetWindowThreadProcessId(hwnd)[0]
-            if fg_tid != our_tid:
-                win32process.AttachThreadInput(our_tid, fg_tid, True)
-                win32process.AttachThreadInput(target_tid, fg_tid, True)
-            win32gui.SetForegroundWindow(hwnd)
-            if fg_tid != our_tid:
-                win32process.AttachThreadInput(our_tid, fg_tid, False)
-                win32process.AttachThreadInput(target_tid, fg_tid, False)
+            # Briefly set topmost to appear above LoL, then restore normal z-order
+            SWP_FLAGS = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
+            win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, SWP_FLAGS)
+            win32gui.SetWindowPos(hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0, SWP_FLAGS)
         except Exception:
             pass
 
