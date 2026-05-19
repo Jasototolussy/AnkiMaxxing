@@ -18,6 +18,7 @@ class Poller:
         self._stop = threading.Event()
         self._was_dead = False
         self._in_game = False
+        self._player_id = None
 
     def start(self):
         self._stop.clear()
@@ -47,24 +48,24 @@ class Poller:
             return None
 
     def _tick(self):
-        player_id = self._get_player_id()
+        # Refresh player_id when available (may fail while dead — keep cached value)
+        fresh_id = self._get_player_id()
+        if fresh_id is not None:
+            self._player_id = fresh_id
 
-        if player_id is None:
-            if self._in_game:
-                self._in_game = False
-                self._was_dead = False
-                if self.on_game_end:
-                    self.on_game_end()
-            return
-
+        # Game state is determined solely by playerlist
         players = self._get_player_list()
         if players is None:
             if self._in_game:
                 self._in_game = False
                 self._was_dead = False
+                self._player_id = None
                 if self.on_game_end:
                     self.on_game_end()
             return
+
+        if self._player_id is None:
+            return  # still waiting for first player ID
 
         if not self._in_game:
             self._in_game = True
@@ -74,8 +75,8 @@ class Poller:
         player = next(
             (
                 p for p in players
-                if p.get("summonerName") == player_id
-                or p.get("riotIdGameName") == player_id
+                if p.get("summonerName") == self._player_id
+                or p.get("riotIdGameName") == self._player_id
             ),
             None,
         )

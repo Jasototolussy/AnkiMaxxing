@@ -81,18 +81,6 @@ def test_api_unavailable_triggers_game_end():
     on_game_end.assert_called_once()
 
 
-def test_api_unavailable_no_player_id_triggers_game_end():
-    on_game_end = MagicMock()
-    p = _make_poller(on_game_end=on_game_end)
-    p._in_game = True
-
-    with patch.object(p, "_get_player_id", return_value=None):
-        p._tick()
-
-    assert not p._in_game
-    on_game_end.assert_called_once()
-
-
 def test_fallback_to_riot_id_game_name():
     p = _make_poller()
     p._in_game = True
