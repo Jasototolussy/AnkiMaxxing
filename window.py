@@ -43,5 +43,6 @@ def minimize_anki():
             SWP_FLAGS = win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
             win32gui.SetWindowPos(lol_hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0, SWP_FLAGS)
             win32gui.SetWindowPos(lol_hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0, SWP_FLAGS)
+            win32gui.SetForegroundWindow(lol_hwnd)
         except Exception:
             pass
