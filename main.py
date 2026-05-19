@@ -27,8 +27,10 @@ def main():
         on_game_end=on_game_end,
     )
     poller.start()
-    tray.run()  # blocks until user clicks "Beenden"
-    poller.stop()
+    try:
+        tray.run()  # blocks until user clicks "Beenden"
+    finally:
+        poller.stop()
 
 
 if __name__ == "__main__":
