@@ -83,6 +83,7 @@ class Poller:
             None,
         )
         if player is None:
+            self._player_id = None  # re-fetch on next tick in case ID was cached wrong
             return
 
         is_dead = player.get("isDead", False)
