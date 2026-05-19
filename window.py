@@ -15,6 +15,7 @@ def maximize_anki():
     hwnd = _find_anki()
     if hwnd:
         win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
+        win32gui.SetForegroundWindow(hwnd)
 
 
 def minimize_anki():
