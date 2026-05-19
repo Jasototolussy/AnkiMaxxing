@@ -27,7 +27,7 @@ class TrayApp:
         )
 
     def _on_quit(self, icon, item):
-        self._icon.stop()
+        icon.stop()
 
     def run(self):
         self._icon = pystray.Icon(
