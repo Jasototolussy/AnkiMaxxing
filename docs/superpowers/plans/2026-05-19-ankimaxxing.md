@@ -19,7 +19,7 @@
 | `poller.py` | Poll LoL Live Client API, fire `on_death` / `on_respawn` callbacks |
 | `tray.py` | pystray icon, menu, `update_status()` |
 | `main.py` | Wire poller + tray together, entry point |
-| `start.bat` | Launch with `pythonw.exe` (no console window) |
+| `start.bat` | Launch with `.venv\Scripts\pythonw.exe` (no console window, no PATH dependency) |
 | `tests/test_window.py` | Unit tests for window control |
 | `tests/test_poller.py` | Unit tests for poller state machine |
 
@@ -534,7 +534,7 @@ Create `start.bat`:
 ```bat
 @echo off
 cd /d "%~dp0"
-pythonw.exe main.py
+.venv\Scripts\pythonw.exe main.py
 ```
 
 - [ ] **Step 2: Create desktop shortcut**

@@ -1,4 +1,4 @@
-# JuraMaxxing — Design Spec
+# AnkiMaxxing — Design Spec
 
 **Date:** 2026-05-19
 
@@ -25,7 +25,7 @@ Entry point: `main.py`. Launched via `start.bat` using `pythonw.exe` (no termina
 1. Tray app starts → Poller thread begins
 2. Poller calls `GET https://127.0.0.1:2999/liveclientdata/playerlist` every 500ms (SSL verification disabled — Riot uses a self-signed cert)
 3. No game active → API unavailable → Poller sleeps silently and retries
-4. Game active → Poller reads `isDead` for the local player (identified via `GET /liveclientdata/activeplayer` → `summonerName`, cached on first successful call)
+4. Game active → Poller identifies the local player via `GET /liveclientdata/activeplayer`: primary key is `summonerName`; if empty or absent (newer patches), fallback to `riotIdGameName`. The identifier is cached on first successful call and used to match the player in `/playerlist`.
 5. State transitions:
    - `false → true` (death): maximize Anki
    - `true → false` (respawn): minimize Anki
@@ -41,12 +41,13 @@ Entry point: `main.py`. Launched via `start.bat` using `pythonw.exe` (no termina
 
 ## Tray Icon
 
-- Tooltip: `JuraMaxxing`
+- Tooltip: `AnkiMaxxing`
 - Menu:
   - Status label (non-clickable): `Warte auf Spiel` or `Im Spiel`
   - **Beenden** — stops the poller thread and exits
 - Icon: simple colored circle generated via `Pillow` (no external icon file needed)
 - On quit: Anki is left in its current state (not modified)
+- Menu updates: pystray does not allow direct menu mutation from outside the main thread. The tray app exposes an `update_status(text)` method that rebuilds the menu and calls `icon.update_menu()` — the poller calls this after each state change.
 
 ---
 
