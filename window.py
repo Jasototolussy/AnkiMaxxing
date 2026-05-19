@@ -26,11 +26,10 @@ def maximize_anki():
 
 def _find_lol():
     result = []
-    def _check(hwnd, lst):
-        if win32gui.GetWindowText(hwnd) == "League of Legends" and \
-           win32gui.GetClassName(hwnd) == "RCLIENT":
-            lst.append(hwnd)
-    win32gui.EnumWindows(_check, result)
+    win32gui.EnumWindows(
+        lambda hwnd, lst: lst.append(hwnd) if win32gui.GetWindowText(hwnd) == "League of Legends (TM) Client" else None,
+        result,
+    )
     return result[0] if result else 0
 
 
