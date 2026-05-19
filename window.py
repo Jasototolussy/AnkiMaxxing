@@ -3,7 +3,12 @@ import win32con
 
 
 def _find_anki():
-    return win32gui.FindWindow(None, "Anki")
+    result = []
+    win32gui.EnumWindows(
+        lambda hwnd, lst: lst.append(hwnd) if "Anki" in win32gui.GetWindowText(hwnd) else None,
+        result,
+    )
+    return result[0] if result else 0
 
 
 def maximize_anki():
